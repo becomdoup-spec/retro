@@ -2,7 +2,8 @@
 const SUPABASE_URL = "https://edafkomypijighnizyee.supabase.co";
 const SUPABASE_KEY = "sb_publishable_pR7et-ooMnmBQus4X5vHRg_-1O4_OSi";
 
-const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Use a different variable name to avoid global conflict
+const supabaseClient = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
@@ -42,7 +43,7 @@ document.getElementById("enableCamera").addEventListener("click", async () => {
       console.log("[DEBUG] Blob created, filename:", filename);
 
       // Upload to Supabase
-      const { error } = await supabase.storage.from("photos").upload(filename, blob);
+      const { error } = await supabaseClient.storage.from("photos").upload(filename, blob);
       if (error) {
         console.error("[DEBUG] Upload failed:", error.message);
       } else {
@@ -73,7 +74,7 @@ async function loadGallery() {
   gallery.innerHTML = "";
   console.log("[DEBUG] Loading gallery from Supabase");
 
-  const { data: files, error } = await supabase
+  const { data: files, error } = await supabaseClient
     .storage
     .from("photos")
     .list("", { limit: 100, sortBy: { column: "name", order: "desc" } });
@@ -92,7 +93,7 @@ async function loadGallery() {
   console.log("[DEBUG] Files found:", files.map(f => f.name));
 
   files.forEach(file => {
-    const { data: urlObj } = supabase
+    const { data: urlObj } = supabaseClient
       .storage
       .from("photos")
       .getPublicUrl(file.name);
