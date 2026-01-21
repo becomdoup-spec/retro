@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RETRO CAPTURE QUEST</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="screen">
+  <h1>🕹️ RETRO CAPTURE QUEST</h1>
+  <p class="subtitle">INSERT CAMERA TO CONTINUE</p>
+
+  <!-- CAMERA -->
+  <video id="video" autoplay playsinline></video>
+  <canvas id="canvas" width="320" height="240"></canvas>
+
+  <button onclick="startCamera()">CAPTURE IMAGE</button>
+  <button onclick="takePhoto()">TAKE SNAPSHOT</button>
+
+  <!-- GAME ANIMATION -->
+  <div class="game">
+    <div class="ground"></div>
+    <div class="runner" id="runner"></div>
+  </div>
+
+  <!-- ACCESS CODE -->
+  <div class="code-box">
+    <input id="code" placeholder="ENTER CODE">
+    <button onclick="checkCode()">UNLOCK ARCHIVE</button>
+  </div>
+
+  <!-- GALLERY -->
+  <div id="gallery"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
