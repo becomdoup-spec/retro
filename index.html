@@ -1,101 +1,48 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>RETRO CAM ARCHIVE // 199X</title>
+  <meta charset="UTF-8" />
+  <title>RETRO ARCHIVE 199X</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- Pixel font (Google Fonts) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <!-- Pixel font -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Supabase v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <main class="crt">
-    <!-- Top "runner" strip -->
-    <header class="topbar panel">
-      <div class="runner-wrap" aria-hidden="true">
-        <div class="runner-track">
-          <div class="runner"></div>
-          <div class="obstacle o1"></div>
-          <div class="obstacle o2"></div>
-          <div class="scanline"></div>
-        </div>
-      </div>
 
-      <div class="title-row">
-        <h1>RETRO CAM ARCHIVE</h1>
-        <div class="status" id="statusText">STATUS: IDLE</div>
-      </div>
-    </header>
+<header class="top">
+  <div class="runner-bar">
+    <div class="runner"></div>
+    <div class="obstacle"></div>
+  </div>
+  <h1>RETRO CAMERA ARCHIVE</h1>
+  <div id="status">STATUS: IDLE</div>
+</header>
 
-    <!-- Controls -->
-    <section class="panel controls">
-      <div class="controls-grid">
-        <div class="block">
-          <h2>CAMERA</h2>
-          <p class="muted">
-            Enable camera to preview. Then press <span class="kbd">CAPTURE &amp; UPLOAD</span>.
-          </p>
+<main>
+  <section class="panel">
+    <button id="enableBtn">ENABLE CAMERA</button>
 
-          <div class="button-row">
-            <button class="btn" id="enableBtn" type="button">ENABLE CAMERA</button>
-            <button class="btn" id="captureBtn" type="button" disabled>CAPTURE &amp; UPLOAD</button>
-            <button class="btn btn-ghost" id="stopBtn" type="button" disabled>STOP</button>
-          </div>
+    <video id="video" autoplay playsinline muted></video>
+    <canvas id="canvas" hidden></canvas>
+  </section>
 
-          <div class="video-frame">
-            <video id="video" autoplay playsinline muted></video>
-            <!-- Hidden canvas used for capturing a frame -->
-            <canvas id="canvas" width="640" height="480" hidden></canvas>
-          </div>
+  <section class="panel">
+    <input id="codeInput" type="password" placeholder="ENTER CODE" maxlength="4">
+    <button id="unlockBtn">UNLOCK ARCHIVE</button>
+  </section>
 
-          <div class="note">
-            <span class="blink">NOTE</span> Uploads go to Supabase bucket: <code>photos</code>
-          </div>
-        </div>
+  <section class="panel">
+    <h2>ARCHIVE</h2>
+    <div id="gallery" class="gallery"></div>
+  </section>
+</main>
 
-        <div class="block">
-          <h2>ACCESS</h2>
-          <p class="muted">Enter the 4-digit code to unlock the archive gallery.</p>
-
-          <div class="unlock-row">
-            <input
-              id="codeInput"
-              class="input"
-              type="password"
-              inputmode="numeric"
-              autocomplete="off"
-              placeholder="••••"
-              maxlength="4"
-              aria-label="Secret code"
-            />
-            <button class="btn" id="unlockBtn" type="button">UNLOCK ARCHIVE</button>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- Gallery -->
-    <section class="panel gallery-panel">
-      <div class="gallery-head">
-        <h2>ARCHIVE GRID</h2>
-        <div class="status" id="galleryStatus">LOCKED</div>
-      </div>
-
-      <div id="gallery" class="gallery-grid" aria-live="polite"></div>
-    </section>
-
-    <footer class="footer">
-      <span>© 199X // NO SIGNAL // GREEN PHOSPHOR MODE</span>
-    </footer>
-  </main>
-
-  <!-- Supabase JS v2 via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
