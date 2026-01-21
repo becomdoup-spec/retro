@@ -6,18 +6,15 @@
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body>
+<body onload="startCamera()">
 
 <div class="screen">
   <h1>🕹️ RETRO CAPTURE QUEST</h1>
-  <p class="subtitle">INSERT CAMERA TO CONTINUE</p>
+  <p class="subtitle">GRANT CAMERA ACCESS TO START</p>
 
   <!-- CAMERA -->
   <video id="video" autoplay playsinline></video>
-  <canvas id="canvas" width="320" height="240"></canvas>
-
-  <button onclick="startCamera()">CAPTURE IMAGE</button>
-  <button onclick="takePhoto()">TAKE SNAPSHOT</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
 
   <!-- GAME ANIMATION -->
   <div class="game">
