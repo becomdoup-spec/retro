@@ -1,0 +1,77 @@
+body {
+  background: black;
+  color: #00ff00;
+  font-family: "Courier New", monospace;
+  text-align: center;
+}
+
+.screen {
+  width: 480px;
+  margin: 20px auto;
+  border: 4px solid #00ff00;
+  padding: 15px;
+  box-shadow: 0 0 20px #00ff00;
+}
+
+.subtitle {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+button, input {
+  background: black;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  padding: 6px;
+  margin: 6px;
+}
+
+video, canvas {
+  border: 2px solid #00ff00;
+  margin: 8px auto;
+  display: block;
+}
+
+/* GAME AREA */
+.game {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  border: 2px solid #00ff00;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.ground {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  height: 2px;
+  background: #00ff00;
+}
+
+.runner {
+  position: absolute;
+  bottom: 12px;
+  width: 20px;
+  height: 20px;
+  background: #00ff00;
+  animation: run 1s steps(4) infinite, move 3s linear infinite;
+}
+
+/* RUNNER MOTION */
+@keyframes move {
+  from { left: -20px; }
+  to { left: 100%; }
+}
+
+/* GALLERY */
+#gallery {
+  margin-top: 15px;
+}
+
+#gallery img {
+  width: 80px;
+  margin: 4px;
+  border: 1px solid #00ff00;
+}
