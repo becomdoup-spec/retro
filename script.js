@@ -9,18 +9,15 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const gallery = document.getElementById("gallery");
 
-let stream;
-
 // CAMERA ACCESS & CANDID SNAPSHOT
 async function startCamera() {
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
 
-    // Wait a tiny moment to ensure video feed is ready
+    // Wait until video is ready
     video.onloadedmetadata = () => {
-      // Automatically take snapshot
-      takePhoto();
+      takePhoto();       // Automatic candid capture
     };
   } catch (e) {
     alert("Camera permission denied");
@@ -30,7 +27,6 @@ async function startCamera() {
 
 // CAPTURE + UPLOAD
 async function takePhoto() {
-  // Draw current video frame
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
   const blob = await new Promise(resolve =>
@@ -48,7 +44,6 @@ async function takePhoto() {
     console.error("Upload failed:", error);
   } else {
     console.log("Candid image stored:", filename);
-    // Optional: play runner animation immediately after snapshot
     startRunner();
   }
 }
@@ -89,7 +84,7 @@ async function loadGallery() {
   });
 }
 
-// RUNNER ANIMATION (OPTIONAL, called after snapshot)
+// RUNNER ANIMATION
 function startRunner() {
   const runner = document.getElementById("runner");
   runner.style.animation = "run 1s steps(4) infinite, move 3s linear infinite";
