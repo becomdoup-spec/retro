@@ -1,134 +1,83 @@
-/* ============================
-   SUPABASE CONFIG (YOUR VALUES)
-   ============================ */
 const SUPABASE_URL = "https://edafkomypijighnizyee.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_pR7et-ooMnmBQus4X5vHRg_-1O4_OSi";
+const BUCKET = "photos";
 
-const supabase = window.supabase.createClient(
+const supabase = supabaseJs.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
-const BUCKET = "photos";
-
-/* ============================
-   DOM
-   ============================ */
-const enableBtn = document.getElementById("enableBtn");
+const btn = document.getElementById("enable");
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const statusEl = document.getElementById("status");
 
-const unlockBtn = document.getElementById("unlockBtn");
-const codeInput = document.getElementById("codeInput");
-const gallery = document.getElementById("gallery");
-
 let stream = null;
 
-/* ============================
-   CAMERA FLOW
-   ============================ */
-enableBtn.onclick = async () => {
+btn.addEventListener("click", async () => {
   try {
+    log("User clicked ENABLE");
+
     status("REQUESTING CAMERA");
-    console.log("Requesting camera…");
 
     stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
 
-    console.log("Camera granted");
-    status("CAMERA READY");
+    log("Camera permission granted");
 
-    // wait for video to be ready, then auto-capture
-    video.onloadedmetadata = () => {
-      setTimeout(captureAndUpload, 300);
-    };
+    await waitForVideoReady(video);
 
-  } catch (err) {
-    console.error("Camera error", err);
-    status("CAMERA ERROR");
-  }
-};
-
-async function captureAndUpload() {
-  try {
+    log("Video ready, capturing frame");
     status("CAPTURING");
-    console.log("Capturing frame…");
 
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    canvas.getContext("2d").drawImage(video, 0, 0);
-
-    const blob = await new Promise(res =>
-      canvas.toBlob(res, "image/png")
-    );
-
-    const filename = `snap_${Date.now()}.png`;
-
-    status("UPLOADING");
-    console.log("Uploading", filename);
-
-    const { error } = await supabase
-      .storage
-      .from(BUCKET)
-      .upload(filename, blob);
-
-    if (error) throw error;
-
-    status("UPLOADED");
-    console.log("Upload success");
+    captureAndUpload();
 
   } catch (err) {
-    console.error("Upload failed", err);
-    status("UPLOAD ERROR");
+    console.error("Camera flow failed", err);
+    status("ERROR");
   }
+});
+
+async function waitForVideoReady(video) {
+  if (video.videoWidth > 0) return;
+  await new Promise(resolve => {
+    video.onloadedmetadata = resolve;
+  });
 }
 
-/* ============================
-   GALLERY UNLOCK
-   ============================ */
-unlockBtn.onclick = async () => {
-  if (codeInput.value !== "8899") {
-    status("DENIED");
-    return;
-  }
+async function captureAndUpload() {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
 
-  status("LOADING ARCHIVE");
-  gallery.innerHTML = "";
+  canvas.getContext("2d").drawImage(video, 0, 0);
 
-  const { data, error } = await supabase
+  const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
+
+  log("Snapshot captured", blob.size);
+
+  status("UPLOADING");
+
+  const filename = `snap_${Date.now()}.png`;
+
+  const { error } = await supabase
     .storage
     .from(BUCKET)
-    .list("", { limit: 100 });
+    .upload(filename, blob);
 
   if (error) {
-    console.error(error);
-    status("ARCHIVE ERROR");
+    console.error("Upload failed", error);
+    status("UPLOAD FAILED");
     return;
   }
 
-  for (const file of data) {
-    const { data: url } = supabase
-      .storage
-      .from(BUCKET)
-      .getPublicUrl(file.name);
+  log("Upload success");
+  status("DONE");
+}
 
-    const div = document.createElement("div");
-    div.className = "thumb";
+function status(t) {
+  statusEl.textContent = t;
+}
 
-    const img = document.createElement("img");
-    img.src = url.publicUrl;
-
-    div.appendChild(img);
-    gallery.appendChild(div);
-  }
-
-  status("ARCHIVE UNLOCKED");
-};
-
-/* ============================
-   UTIL
-   ============================ */
-function status(text) {
-  statusEl.textContent = "STATUS: " + text;
+function log(...args) {
+  console.log("[FLOW]", ...args);
 }
