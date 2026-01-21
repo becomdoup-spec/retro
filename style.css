@@ -345,3 +345,17 @@ code {
   color: var(--fg-dim);
   opacity: 0.9;
 }
+
+button,
+input,
+video {
+  position: relative;
+  z-index: 5;
+}
+
+/* Decorative layers must never intercept clicks */
+.scanline,
+.runner-wrap,
+.runner-track {
+  pointer-events: none;
+}
