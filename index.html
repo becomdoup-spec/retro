@@ -1,40 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>RETRO CAPTURE QUEST</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RETRO PHOTO ARCHIVE</title>
+
+  <!-- Retro pixel font (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase JS v2 via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+  <header class="header">
+    <div class="marquee">
+      <span>▲ RETRO 1990s PHOTO VAULT ▲ SYSTEM ONLINE ▲ INSERT CODE TO UNLOCK ▲</span>
+    </div>
 
-<div class="screen">
-  <h1>🕹️ RETRO CAPTURE QUEST</h1>
-  <p class="subtitle">GRANT CAMERA ACCESS TO START</p>
+    <!-- Runner "game" strip -->
+    <div class="runner-strip" aria-label="Runner animation">
+      <div class="scanline"></div>
+      <div class="runner-ground"></div>
+      <div class="runner"></div>
+      <div class="obstacle"></div>
+      <div class="pixel-stars"></div>
+    </div>
+  </header>
 
-  <!-- ENABLE CAMERA BUTTON -->
-  <button id="enableCamera" class="retro-button">CLICK TO ENABLE CAMERA</button>
+  <main class="container">
+    <section class="panel">
+      <h1 class="title">RETRO CAMERA CAPTURE</h1>
+      <p class="subtext">
+        Enable camera to preview. Capture is <span class="accent">explicit</span> (no silent snapshots).
+      </p>
 
-  <!-- CAMERA -->
-  <video id="video" autoplay playsinline style="display:none;"></video>
-  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+      <div class="controls">
+        <button id="enableCameraBtn" class="btn arcade">Enable Camera</button>
+        <button id="captureUploadBtn" class="btn arcade" disabled>Capture &amp; Upload</button>
+        <span id="status" class="status">STATUS: IDLE</span>
+      </div>
 
-  <!-- GAME ANIMATION -->
-  <div class="game">
-    <div class="ground"></div>
-    <div class="runner" id="runner"></div>
-  </div>
+      <div class="video-wrap">
+        <!-- Live preview -->
+        <video id="video" autoplay playsinline muted></video>
 
-  <!-- ACCESS CODE -->
-  <div class="code-box">
-    <input id="code" placeholder="ENTER CODE">
-    <button onclick="checkCode()">UNLOCK ARCHIVE</button>
-  </div>
+        <!-- Hidden canvas used for capturing frames -->
+        <canvas id="canvas" width="640" height="480" hidden></canvas>
+      </div>
 
-  <!-- GALLERY -->
-  <div id="gallery"></div>
-</div>
+      <div class="hint">
+        <p>
+          Debug logs are printed in the browser console.
+          <br/>Supabase bucket: <span class="mono">photos</span>
+        </p>
+      </div>
+    </section>
 
-<script src="script.js"></script>
+    <section class="panel">
+      <h2 class="title small">ARCHIVE LOCK</h2>
+      <p class="subtext">
+        Enter access code to load the gallery.
+      </p>
+
+      <div class="unlock">
+        <input id="codeInput" class="input" type="password" inputmode="numeric" placeholder="Enter secret code" />
+        <button id="unlockBtn" class="btn arcade">Unlock Archive</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3 class="title tiny">GALLERY</h3>
+      <div id="gallery" class="gallery" aria-live="polite">
+        <div class="gallery-placeholder">LOCKED. ENTER CODE.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>© 199X VAULT SYSTEM</span>
+      <span class="mono">v1.0</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
